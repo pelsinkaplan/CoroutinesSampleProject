@@ -12,6 +12,7 @@ import com.pelsinkaplan.coroutinessampleproject.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,54 +28,58 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val dataResponse =
                 APIInstance.getInstance().create(APIService::class.java).getHotCoffee()
-            dataResponse.enqueue(object : Callback<List<Coffee>> {
-                override fun onFailure(call: Call<List<Coffee>>, t: Throwable) {
-                    Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG)
-                        .show()
-                }
-
-                override fun onResponse(
-                    call: Call<List<Coffee>>,
-                    response: Response<List<Coffee>>
-                ) {
-                    if (response.isSuccessful) {
-                        Log.e("Coroutines", "hot coffees")
-                        postList = (response.body() as MutableList<Coffee>?)!!
-                        adapter = CoffeeAdapter(postList)
-                        binding.hotCoffeeRecyclerView.adapter = adapter
-                        binding.hotCoffeeRecyclerView.layoutManager =
-                            GridLayoutManager(applicationContext, 2)
+            withContext(Dispatchers.Main) {
+                dataResponse.enqueue(object : Callback<List<Coffee>> {
+                    override fun onFailure(call: Call<List<Coffee>>, t: Throwable) {
+                        Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG)
+                            .show()
                     }
-                }
-            })
+
+                    override fun onResponse(
+                        call: Call<List<Coffee>>,
+                        response: Response<List<Coffee>>
+                    ) {
+                        if (response.isSuccessful) {
+                            Log.e("Coroutines", "hot coffees")
+                            postList = (response.body() as MutableList<Coffee>?)!!
+                            adapter = CoffeeAdapter(postList)
+                            binding.hotCoffeeRecyclerView.adapter = adapter
+                            binding.hotCoffeeRecyclerView.layoutManager =
+                                GridLayoutManager(applicationContext, 2)
+                        }
+                    }
+                })
+            }
         }
 
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val dataResponse =
                 APIInstance.getInstance().create(APIService::class.java).getColdCoffee()
-            dataResponse.enqueue(object : Callback<List<Coffee>> {
-                override fun onFailure(call: Call<List<Coffee>>, t: Throwable) {
-                    Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG)
-                        .show()
-                }
-
-                override fun onResponse(
-                    call: Call<List<Coffee>>,
-                    response: Response<List<Coffee>>
-                ) {
-                    if (response.isSuccessful) {
-                        Log.e("Coroutines", "cold coffees")
-                        postList = (response.body() as MutableList<Coffee>?)!!
-                        adapter = CoffeeAdapter(postList)
-                        binding.coldCoffeeRecyclerView.adapter = adapter
-                        binding.coldCoffeeRecyclerView.layoutManager =
-                            GridLayoutManager(applicationContext, 2)
+            withContext(Dispatchers.Main) {
+                dataResponse.enqueue(object : Callback<List<Coffee>> {
+                    override fun onFailure(call: Call<List<Coffee>>, t: Throwable) {
+                        Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG)
+                            .show()
                     }
-                }
-            })
+
+                    override fun onResponse(
+                        call: Call<List<Coffee>>,
+                        response: Response<List<Coffee>>
+                    ) {
+                        if (response.isSuccessful) {
+                            Log.e("Coroutines", "hot coffees")
+                            postList = (response.body() as MutableList<Coffee>?)!!
+                            adapter = CoffeeAdapter(postList)
+                            binding.hotCoffeeRecyclerView.adapter = adapter
+                            binding.hotCoffeeRecyclerView.layoutManager =
+                                GridLayoutManager(applicationContext, 2)
+                        }
+                    }
+                })
+            }
         }
 
     }
