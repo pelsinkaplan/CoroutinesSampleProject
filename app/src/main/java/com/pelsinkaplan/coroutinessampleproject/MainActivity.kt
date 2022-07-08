@@ -70,11 +70,11 @@ class MainActivity : AppCompatActivity() {
                         response: Response<List<Coffee>>
                     ) {
                         if (response.isSuccessful) {
-                            Log.e("Coroutines", "hot coffees")
+                            Log.e("Coroutines", "cold coffees")
                             postList = (response.body() as MutableList<Coffee>?)!!
                             adapter = CoffeeAdapter(postList)
-                            binding.hotCoffeeRecyclerView.adapter = adapter
-                            binding.hotCoffeeRecyclerView.layoutManager =
+                            binding.coldCoffeeRecyclerView.adapter = adapter
+                            binding.coldCoffeeRecyclerView.layoutManager =
                                 GridLayoutManager(applicationContext, 2)
                         }
                     }
